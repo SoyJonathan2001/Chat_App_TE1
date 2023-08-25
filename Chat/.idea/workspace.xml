@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="55fd3db7-4e74-424d-bfeb-b6ab250a9dd2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Chat/src/main/java/com/example/chat/Chat1.java" beforeDir="false" afterPath="$PROJECT_DIR$/Chat/src/main/java/com/example/chat/Chat1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chat/src/main/java/com/example/chat/Chat2.java" beforeDir="false" afterPath="$PROJECT_DIR$/Chat/src/main/java/com/example/chat/Chat2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,17 +30,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/--------------------/Desktop/Proyecto de datos 1/Chat_App_TE1/Chat_App_TE1/Chat"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/--------------------/Desktop/Proyecto de datos 1/Chat_App_TE1/Chat_App_TE1/Chat&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Application.Chat1">
     <configuration name="Chat1" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.chat.Chat1" />
-      <module name="Chat" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.example.chat.StyledChatWithBackground" />
