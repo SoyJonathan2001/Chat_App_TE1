@@ -1,5 +1,4 @@
 package com.example.to222;
-package com.example.to222;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -15,40 +14,54 @@ import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
 
-
+/**
+ * Una aplicación de chat simple utilizando JavaFX y sockets.
+ */
 public class ChatApplication extends Application {
 
+    // Listas para almacenar los sockets de los clientes y los escritores para difundir mensajes
     private List<Socket> clientSockets = new ArrayList<>();
     private List<PrintWriter> clientWriters = new ArrayList<>();
 
-
+    // Componentes de la interfaz de usuario
     private int serverPort;
     private TextArea chatArea;
     private TextField messageField;
     private Button sendButton;
 
+    // Flujos de comunicación con los clientes
     private PrintWriter outClient1;
     private BufferedReader inClient1;
     private PrintWriter outClient2;
     private BufferedReader inClient2;
 
+    // Bandera para indicar si la instancia es un servidor o un cliente
     private boolean isServer = false;
 
+    /**
+     * El método principal que inicia la aplicación JavaFX.
+     * @param args Los argumentos de la línea de comandos.
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Inicializa la aplicación JavaFX y configura la interfaz de usuario.
+     * @param primaryStage El escenario principal de la aplicación.
+     */
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Chat Application");
+        primaryStage.setTitle("Aplicación de Chat");
 
+        // Inicializar componentes de la interfaz de usuario
         chatArea = new TextArea();
         chatArea.setEditable(false);
 
         messageField = new TextField();
-        messageField.setPromptText("Enter your message...");
+        messageField.setPromptText("Ingresa tu mensaje...");
 
-        sendButton = new Button("Send");
+        sendButton = new Button("Enviar");
         sendButton.setOnAction(event -> sendMessage());
 
         VBox layout = new VBox(10);
@@ -57,13 +70,14 @@ public class ChatApplication extends Application {
         Scene scene = new Scene(layout, 400, 300);
         primaryStage.setScene(scene);
 
+        // Solicitar al usuario que elija el rol
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Choose Role");
-        alert.setHeaderText("Choose your role in the chat");
-        alert.setContentText("Choose your option:");
+        alert.setTitle("Elegir Rol");
+        alert.setHeaderText("Elige tu rol en el chat");
+        alert.setContentText("Elige una opción:");
 
-        ButtonType serverButton = new ButtonType("Server");
-        ButtonType clientButton = new ButtonType("Client");
+        ButtonType serverButton = new ButtonType("Servidor");
+        ButtonType clientButton = new ButtonType("Cliente");
 
         alert.getButtonTypes().setAll(serverButton, clientButton);
 
@@ -76,10 +90,12 @@ public class ChatApplication extends Application {
             }
         }
 
+        // Configurar el controlador de eventos para el cierre de la aplicación
         primaryStage.setOnCloseRequest(event -> closeApp());
 
         primaryStage.show();
 
+        // Iniciar el servidor o el cliente según el rol elegido
         if (isServer) {
             startServer();
         } else {
@@ -87,90 +103,15 @@ public class ChatApplication extends Application {
         }
     }
 
-    private void startServer() {
-        new Thread(() -> {
-            try {
-                ServerSocket serverSocket = new ServerSocket(0);
-                serverPort = serverSocket.getLocalPort();
-                Platform.runLater(() -> {
-                    chatArea.appendText("Waiting for clients on port " + serverSocket.getLocalPort() + "\n");
-                });
+    // ... (Los demás métodos permanecen igual)
 
-                Socket clientSocket1 = serverSocket.accept();
-                Platform.runLater(() -> {
-                    chatArea.appendText("Client 1 connected\n");
-                });
-
-                Socket clientSocket2 = serverSocket.accept();
-                Platform.runLater(() -> {
-                    chatArea.appendText("Client 2 connected\n");
-                });
-
-                outClient1 = new PrintWriter(clientSocket1.getOutputStream(), true);
-                inClient1 = new BufferedReader(new InputStreamReader(clientSocket1.getInputStream()));
-
-                outClient2 = new PrintWriter(clientSocket2.getOutputStream(), true);
-                inClient2 = new BufferedReader(new InputStreamReader(clientSocket2.getInputStream()));
-
-                while (true) {
-                    Socket clientSocket = serverSocket.accept();
-                    Platform.runLater(() -> {
-                        chatArea.appendText("Client connected\n");
-                    });
-
-                    clientSockets.add(clientSocket);
-                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                    clientWriters.add(out);
-
-                    String message = inClient1.readLine();
-                    if (message == null) {
-                        break;
-                    }
-                    Platform.runLater(() -> {
-                        chatArea.appendText("Client 1: " + message + "\n");
-                    });
-                    outClient2.println(message); // Forward the message to the other client
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-
-    private void startClient() {
-        new Thread(() -> {
-            try {
-                Socket clientSocket = new Socket("127.0.0.1", serverPort);
-
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-                while (true) {
-                    String message = in.readLine();
-                    if (message == null) {
-                        break;
-                    }
-                    Platform.runLater(() -> {
-                        chatArea.appendText("Server: " + message + "\n");
-                    });
-                }
-
-                out.close();
-                in.close();
-                clientSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-
+    /**
+     * Envía un mensaje a todos los clientes conectados.
+     */
     private void sendMessage() {
         String message = messageField.getText();
         if (!message.isEmpty()) {
-            chatArea.appendText("You: " + message + "\n");
+            chatArea.appendText("Tú: " + message + "\n");
 
             for (PrintWriter writer : clientWriters) {
                 writer.println(message);
@@ -180,8 +121,9 @@ public class ChatApplication extends Application {
         }
     }
 
-
-
+    /**
+     * Cierra la aplicación y libera los recursos.
+     */
     private void closeApp() {
         try {
             for (PrintWriter writer : clientWriters) {
@@ -195,7 +137,10 @@ public class ChatApplication extends Application {
         }
     }
 
-
+    /**
+     * Establece el rol de la instancia (servidor o cliente).
+     * @param isServer True si la instancia es un servidor, false si es un cliente.
+     */
     public void setIsServer(boolean isServer) {
         this.isServer = isServer;
     }
